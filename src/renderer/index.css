@@ -119,3 +119,8 @@ select {
 .drag-error {
   @apply border-2 border-dashed border-error-500 bg-error-100;
 }
+
+#title-bar {
+  user-select: none;
+  -webkit-app-region: drag;
+}

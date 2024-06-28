@@ -5,6 +5,13 @@ const createWindow = () => {
   const mainWindow = new BrowserWindow({
     width: 400,
     height: 600,
+    minHeight: 400,
+    minWidth: 300,
+    maxHeight: 800,
+    maxWidth: 450,
+    maximizable: false,
+    titleBarStyle: 'hidden',
+    titleBarOverlay: true,
     webPreferences: {
       preload: join(__dirname, 'preload.js'),
     },
@@ -36,3 +43,4 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
