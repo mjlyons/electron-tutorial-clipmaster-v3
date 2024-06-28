@@ -5,12 +5,10 @@ import {
   clipboard,
   globalShortcut,
   ipcMain,
-  Menu,
   Notification,
   Tray,
 } from "electron";
-
-let tray: Tray | null = null;
+import ElectronPositioner from "electron-positioner";
 
 const createWindow = () => {
   const mainWindow = new BrowserWindow({
@@ -44,24 +42,20 @@ const createWindow = () => {
 app.on("ready", () => {
   const browserWindow = createWindow();
 
-  const contextMenu = Menu.buildFromTemplate([
-    {
-      label: "Show Window",
-      click: () => {
-        browserWindow.show();
-        browserWindow.focus();
-      },
-    },
-    {
-      label: "Quit",
-      click: () => {
-        app.quit();
-      },
-    },
-  ]);
-
   let tray = new Tray("./src/icons/trayTemplate.png");
-  tray.setContextMenu(contextMenu);
+  tray.setIgnoreDoubleClickEvents(true);
+
+  const positioner = new ElectronPositioner(browserWindow);
+
+  tray.on("click", () => {
+    if (!tray) return;
+    if (browserWindow.isVisible()) {
+      return browserWindow.hide();
+    }
+    const trayPosition = positioner.calculate("trayCenter", tray.getBounds());
+    browserWindow.setPosition(trayPosition.x, trayPosition.y, false);
+    browserWindow.show();
+  });
 
   globalShortcut.register("CommandOrControl+Shift+E", () => {
     browserWindow.show();
