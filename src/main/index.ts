@@ -5,8 +5,12 @@ import {
   clipboard,
   globalShortcut,
   ipcMain,
+  Menu,
   Notification,
+  Tray,
 } from "electron";
+
+let tray: Tray | null = null;
 
 const createWindow = () => {
   const mainWindow = new BrowserWindow({
@@ -39,6 +43,25 @@ const createWindow = () => {
 
 app.on("ready", () => {
   const browserWindow = createWindow();
+
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: "Show Window",
+      click: () => {
+        browserWindow.show();
+        browserWindow.focus();
+      },
+    },
+    {
+      label: "Quit",
+      click: () => {
+        app.quit();
+      },
+    },
+  ]);
+
+  let tray = new Tray("./src/icons/trayTemplate.png");
+  tray.setContextMenu(contextMenu);
 
   globalShortcut.register("CommandOrControl+Shift+E", () => {
     browserWindow.show();
